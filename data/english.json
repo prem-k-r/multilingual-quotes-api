@@ -1,42 +1,182 @@
 [
-  {
-    "quote": "Imagination is more important than knowledge.",
-    "author": "Albert Einstein"
-  },
-  {
-    "quote": "Your time is limited, so don’t waste it living someone else’s life.",
-    "author": "Steve Jobs"
-  },
-  {
-    "quote": "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
-    "author": "Bill Gates"
-  },
-  {
-    "quote": "Any sufficiently advanced technology is indistinguishable from magic.",
-    "author": "Arthur C. Clarke"
-  },
-  {
-    "quote": "The important thing is not to stop questioning. Curiosity has its own reason for existing.",
-    "author": "Albert Einstein"
-  },
-  {
-    "quote": "Innovation distinguishes between a leader and a follower.",
-    "author": "Steve Jobs"
-  },
-  {
-    "quote": "If you can't make it good, at least make it look good.",
-    "author": "Bill Gates"
-  },
-  {
-    "quote": "The science of today is the technology of tomorrow.",
-    "author": "Edward Teller"
-  },
-  {
-    "quote": "The greatest enemy of knowledge is not ignorance, it is the illusion of knowledge.",
-    "author": "Stephen Hawking"
-  },
-  {
-    "quote": "We are just an advanced breed of monkeys on a minor planet of a very average star.",
-    "author": "Stephen Hawking"
-  }
+    {
+        "quote": "Imagination is more important than knowledge.",
+        "author": "Albert Einstein"
+    },
+    {
+        "quote": "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.",
+        "author": "Steve Jobs"
+    },
+    {
+        "quote": "It's fine to celebrate success but it is more important to heed the lessons of failure.",
+        "author": "Bill Gates"
+    },
+    {
+        "quote": "Science is a way of thinking much more than it is a body of knowledge.",
+        "author": "Carl Sagan"
+    },
+    {
+        "quote": "Any sufficiently advanced technology is indistinguishable from magic.",
+        "author": "Arthur C. Clarke"
+    },
+    {
+        "quote": "The important thing is not to stop questioning. Curiosity has its own reason for existing.",
+        "author": "Albert Einstein"
+    },
+    {
+        "quote": "Success usually comes to those who are too busy to be looking for it.",
+        "author": "Henry David Thoreau"
+    },
+    {
+        "quote": "If you can't explain it simply, you don't understand it well enough.",
+        "author": "Albert Einstein"
+    },
+    {
+        "quote": "Programs must be written for people to read, and only incidentally for machines to execute.",
+        "author": "Harold Abelson"
+    },
+    {
+        "quote": "The science of today is the technology of tomorrow.",
+        "author": "Edward Teller"
+    },
+    {
+        "quote": "The good thing about science is that it's true whether or not you believe in it.",
+        "author": "Neil deGrasse Tyson"
+    },
+    {
+        "quote": "Code is like humor. When you have to explain it, it’s bad.",
+        "author": "Cory House"
+    },
+    {
+        "quote": "Innovation distinguishes between a leader and a follower.",
+        "author": "Steve Jobs"
+    },
+    {
+        "quote": "Logic will get you from A to B. Imagination will take you everywhere.",
+        "author": "Albert Einstein"
+    },
+    {
+        "quote": "The human brain has 100 billion neurons, but the network of connections is what matters.",
+        "author": "Jeff Hawkins"
+    },
+    {
+        "quote": "Everybody in this country should learn to program a computer because it teaches you how to think.",
+        "author": "Steve Jobs"
+    },
+    {
+        "quote": "First, solve the problem. Then, write the code.",
+        "author": "John Johnson"
+    },
+    {
+        "quote": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+        "author": "Martin Fowler"
+    },
+    {
+        "quote": "Experience is the name everyone gives to their mistakes.",
+        "author": "Oscar Wilde"
+    },
+    {
+        "quote": "In science, there are no shortcuts to truth.",
+        "author": "Louis Pasteur"
+    },
+    {
+        "quote": "Data is a precious thing and will last longer than the systems themselves.",
+        "author": "Tim Berners-Lee"
+    },
+    {
+        "quote": "Programs are meant to be read by humans and only incidentally for computers to execute.",
+        "author": "Donald Knuth"
+    },
+    {
+        "quote": "Technology is best when it brings people together.",
+        "author": "Matt Mullenweg"
+    },
+    {
+        "quote": "Learning to write programs stretches your mind, and helps you think better.",
+        "author": "Bill Gates"
+    },
+    {
+        "quote": "The purpose of computing is insight, not numbers.",
+        "author": "Richard Hamming"
+    },
+    {
+        "quote": "Mathematics is the language in which God has written the universe.",
+        "author": "Galileo Galilei"
+    },
+    {
+        "quote": "The advance of science depends on the production of new techniques, new tools, and new materials.",
+        "author": "Freeman Dyson"
+    },
+    {
+        "quote": "Good code is its own best documentation.",
+        "author": "Steve McConnell"
+    },
+    {
+        "quote": "The real question is not whether machines think but whether men do.",
+        "author": "B.F. Skinner"
+    },
+    {
+        "quote": "If debugging is the process of removing software bugs, then programming must be the process of putting them in.",
+        "author": "Edsger Dijkstra"
+    },
+    {
+        "quote": "Your best teacher is your last mistake.",
+        "author": "Swami Vivekananda"
+    },
+    {
+        "quote": "Science is a beautiful gift to humanity; we should not distort it.",
+        "author": "A.P.J. Abdul Kalam"
+    },
+    {
+        "quote": "Innovation is the key to transforming dreams into reality.",
+        "author": "Narendra Modi"
+    },
+    {
+        "quote": "The brain is like a muscle. When it is in use we feel very good. Understanding is joyous.",
+        "author": "Carl Sagan"
+    },
+    {
+        "quote": "Technology is the campfire around which we tell our stories.",
+        "author": "Laurie Anderson"
+    },
+    {
+        "quote": "Don’t just be a consumer of knowledge, be a creator.",
+        "author": "Ratan Tata"
+    },
+    {
+        "quote": "Failure will never overtake me if my determination to succeed is strong enough.",
+        "author": "Og Mandino"
+    },
+    {
+        "quote": "Change is the law of life. And those who look only to the past or present are certain to miss the future.",
+        "author": "John F. Kennedy"
+    },
+    {
+        "quote": "A person who never made a mistake never tried anything new.",
+        "author": "Albert Einstein"
+    },
+    {
+        "quote": "The future belongs to those who prepare for it today.",
+        "author": "Malcolm X"
+    },
+    {
+        "quote": "The power of imagination makes us infinite.",
+        "author": "John Muir"
+    },
+    {
+        "quote": "Do not wait for leaders; do it alone, person to person.",
+        "author": "Mother Teresa"
+    },
+    {
+        "quote": "Science and everyday life cannot and should not be separated.",
+        "author": "Rosalind Franklin"
+    },
+    {
+        "quote": "The mind is not a vessel to be filled but a fire to be kindled.",
+        "author": "Plutarch"
+    },
+    {
+        "quote": "Vision without action is a daydream. Action without vision is a nightmare.",
+        "author": "Japanese Proverb"
+    }
 ]
