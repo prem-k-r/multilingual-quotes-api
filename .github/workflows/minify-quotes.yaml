@@ -9,19 +9,23 @@ on:
 jobs:
     minify:
         runs-on: ubuntu-latest
+
         steps:
             - name: Checkout repo
               uses: actions/checkout@v3
-              with:
-                  fetch-depth: 2
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
+            - name: Set up Python
+              uses: actions/setup-python@v4
               with:
-                  node-version: "18"
+                  python-version: "3.x"
 
-            - name: Run Minifier Script
-              run: node scripts/minify-changed.js
+            - name: Install dependencies (if any)
+              run: |
+                  python -m pip install --upgrade pip
+                  # Add other dependencies here if needed
+
+            - name: Run Minify Script
+              run: python scripts/minify_changed.py
 
             - name: Commit minified files
               run: |
