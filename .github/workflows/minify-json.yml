@@ -117,7 +117,7 @@ jobs:
                               metadata.files[filename] = {
                                   source: inputFile,       // Original file path
                                   count: quoteCount,       // Number of quotes in the file
-                                  size: fileSize + " kB"   // Minified file size in kilobytes
+                                  size(kB): fileSize       // Minified file size in kilobytes
                               };
                               
                               console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' bytes');
