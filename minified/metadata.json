@@ -1,0 +1,29 @@
+{
+  "lastUpdated": "2025-06-09T15:00:58.862Z",
+  "files": {
+    "bn.json": {
+      "timestamp": "2025-06-09T15:00:58.862Z",
+      "source": "data/bn.json",
+      "size": 248,
+      "count": 1
+    },
+    "en.json": {
+      "timestamp": "2025-06-09T15:00:58.862Z",
+      "source": "data/en.json",
+      "size": 32188,
+      "count": 269
+    },
+    "hi.json": {
+      "timestamp": "2025-06-09T15:00:58.862Z",
+      "source": "data/hi.json",
+      "size": 2307,
+      "count": 11
+    },
+    "ur.json": {
+      "timestamp": "2025-06-09T15:00:58.862Z",
+      "source": "data/ur.json",
+      "size": 1406,
+      "count": 10
+    }
+  }
+}
