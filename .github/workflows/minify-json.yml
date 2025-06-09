@@ -108,7 +108,7 @@ jobs:
                               let fileSize = 0;
                               try {
                                   const stats = fs.statSync(outputFile);
-                                  fileSize = stats.size;
+                                  fileSize = `${(stats.size / 1024).toFixed(2)} KB`;
                               } catch (error) {
                                   console.warn('Warning: Could not get size for ' + outputFile);
                               }
@@ -116,8 +116,8 @@ jobs:
                               // Store all metadata for this file
                               metadata.files[filename] = {
                                   source: inputFile,       // Original file path
-                                  size: fileSize,          // Minified file size in bytes
-                                  count: quoteCount        // Number of quotes in the file
+                                  count: quoteCount,       // Number of quotes in the file
+                                  size: fileSize           // Minified file size in bytes
                               };
                               
                               console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' bytes');
