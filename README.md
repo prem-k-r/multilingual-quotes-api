@@ -54,8 +54,6 @@ multilingual-quotes-api/
 │   ├── hi.json        ← auto-generated
 │   ├── bn.json        ← auto-generated
 │   └── ...other language files
-├── scripts/
-│   └── minify-changed.js
 ├── .github/
 │   └── workflows/
 │       └── minify-quotes.yml
