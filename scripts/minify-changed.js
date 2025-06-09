@@ -2,12 +2,31 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-// Get changed files from last commit
-const output = execSync("git diff --name-only HEAD^ HEAD").toString();
-const changedFiles = output.split("\n").filter(file => file.startsWith("data/") && file.endsWith(".json"));
+function getSafeChangedFiles() {
+    try {
+        // Try getting changed files from last commit
+        return execSync("git diff --name-only HEAD~1")
+            .toString()
+            .split("\n")
+            .filter(file => file.startsWith("data/") && file.endsWith(".json"));
+    } catch (e) {
+        console.warn("⚠️ git diff failed — falling back to all data/*.json");
+        try {
+            return execSync("git ls-files data/*.json")
+                .toString()
+                .split("\n")
+                .filter(Boolean);
+        } catch {
+            console.error("❌ Could not read any data/*.json files");
+            return [];
+        }
+    }
+}
+
+const changedFiles = getSafeChangedFiles();
 
 if (changedFiles.length === 0) {
-    console.log("No data JSON files changed. Skipping.");
+    console.log("ℹ️ No JSON files to process.");
     process.exit(0);
 }
 
@@ -17,10 +36,12 @@ for (const file of changedFiles) {
     const destPath = path.join("minified", filename);
 
     try {
-        const data = JSON.parse(fs.readFileSync(srcPath, "utf8"));
-        fs.writeFileSync(destPath, JSON.stringify(data));
-        console.log(`Minified ${filename} → minified/${filename}`);
+        const raw = fs.readFileSync(srcPath, "utf8");
+        const parsed = JSON.parse(raw);
+        fs.mkdirSync("minified", { recursive: true });
+        fs.writeFileSync(destPath, JSON.stringify(parsed));
+        console.log(`✅ Minified: ${filename} → minified/${filename}`);
     } catch (err) {
-        console.error(`Failed to minify ${filename}:`, err.message);
+        console.error(`❌ Error processing ${filename}: ${err.message}`);
     }
 }
