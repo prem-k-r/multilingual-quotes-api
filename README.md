@@ -53,8 +53,8 @@ multilingual-quotes-api/
 │   ├── en.json        ← auto-generated
 │   ├── hi.json        ← auto-generated
 │   ├── bn.json        ← auto-generated
-│   ├── ...other language files
-│   └── metadata.json  ← tracking file
+│   └── ...other language files
+├── metadata.json      ← tracking file
 ├── .github/
 │   └── workflows/
 │       └── minify-quotes.yml
