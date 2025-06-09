@@ -82,7 +82,7 @@ jobs:
                       
                       // Initialize metadata object
                       const metadata = {
-                          lastUpdated: '',  // Will be set to the most recent file timestamp
+                          lastUpdated: new Date().toISOString(),  // When this process ran
                           files: {}  // Will contain info about each processed file
                       };
                       
@@ -112,30 +112,21 @@ jobs:
                               } catch (error) {
                                   console.warn('Warning: Could not get size for ' + outputFile);
                               }
-                              
-                              // Get the actual modification time of the source file
-                              const sourceStats = fs.statSync(inputFile);
-                              const timestamp = sourceStats.mtime.toISOString();
-                              
+                           
                               // Store all metadata for this file
                               metadata.files[filename] = {
-                                  timestamp: timestamp,    // When this file was processed
                                   source: inputFile,       // Original file path
                                   size: fileSize,          // Minified file size in bytes
                                   count: quoteCount        // Number of quotes in the file
                               };
                               
                               console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' bytes');
-                              
+
                           } catch (error) {
                               console.error('✗ Error processing ' + filename + ':', error.message);
                               process.exit(1);
                           }
                       });
-                      
-                      // Set lastUpdated to the most recent file timestamp
-                      const allTimestamps = Object.values(metadata.files).map(file => new Date(file.timestamp));
-                      metadata.lastUpdated = new Date(Math.max(...allTimestamps)).toISOString();
 
                       // Write the metadata file with pretty formatting
                       fs.writeFileSync('$metadata_file', JSON.stringify(metadata, null, 2));
