@@ -1,0 +1,77 @@
+name: Minify JSON Files
+
+on:
+    push:
+        paths:
+            - "data/**/*.json"
+    workflow_dispatch:
+
+jobs:
+    minify-json:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+
+            - name: Create minified directory
+              run: mkdir -p minified
+
+            - name: Install dependencies
+              run: npm init -y && npm install jsonminify
+
+            - name: Minify JSON files
+              run: |
+                  # Find all JSON files in data/ directory and minify them
+                  find data -name "*.json" -type f | while read -r input_file; do
+                      # Get just the filename (e.g., "en.json" from "data/en.json")
+                      filename=$(basename "$input_file")
+                      output_file="minified/$filename"
+                      
+                      echo "Minifying $input_file -> $output_file"
+                      
+                      # Minify the JSON file using Node.js
+                      node -e "
+                          const fs = require('fs');
+                          const minify = require('jsonminify');
+                          
+                          try {
+                              const content = fs.readFileSync('$input_file', 'utf8');
+                              const minified = minify(content);
+                              fs.writeFileSync('$output_file', minified);
+                              console.log('✓ Successfully minified $input_file');
+                          } catch (error) {
+                              console.error('✗ Error minifying $input_file:', error.message);
+                              process.exit(1);
+                          }
+                      "
+                  done
+
+            - name: Check for changes
+              id: check_changes
+              run: |
+                  if [ -n "$(git status --porcelain minified/)" ]; then
+                    echo "changes=true" >> $GITHUB_OUTPUT
+                    echo "Changes detected in minified files"
+                  else
+                    echo "changes=false" >> $GITHUB_OUTPUT
+                    echo "No changes detected in minified files"
+                  fi
+
+            - name: Commit and push changes
+              if: steps.check_changes.outputs.changes == 'true'
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+                  git add minified/
+                  git commit -m "Auto-minify JSON files [skip ci]"
+                  git push
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
