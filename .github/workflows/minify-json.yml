@@ -82,7 +82,7 @@ jobs:
                       
                       // Initialize metadata object
                       const metadata = {
-                          lastUpdated: new Date().toISOString(),  // When this process ran
+                          lastUpdated: '',  // Will be set to the most recent file timestamp
                           files: {}  // Will contain info about each processed file
                       };
                       
@@ -113,8 +113,9 @@ jobs:
                                   console.warn('Warning: Could not get size for ' + outputFile);
                               }
                               
-                              // Record when this specific file was processed
-                              const timestamp = new Date().toISOString();
+                              // Get the actual modification time of the source file
+                              const sourceStats = fs.statSync(inputFile);
+                              const timestamp = sourceStats.mtime.toISOString();
                               
                               // Store all metadata for this file
                               metadata.files[filename] = {
@@ -132,6 +133,10 @@ jobs:
                           }
                       });
                       
+                      // Set lastUpdated to the most recent file timestamp
+                      const allTimestamps = Object.values(metadata.files).map(file => new Date(file.timestamp));
+                      metadata.lastUpdated = new Date(Math.max(...allTimestamps)).toISOString();
+
                       // Write the metadata file with pretty formatting
                       fs.writeFileSync('$metadata_file', JSON.stringify(metadata, null, 2));
                       console.log('✓ Updated metadata file with ' + files.length + ' files');
