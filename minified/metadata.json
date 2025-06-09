@@ -1,25 +1,25 @@
 {
-  "lastUpdated": "2025-06-09T15:18:40.990Z",
+  "lastUpdated": "2025-06-09T15:38:15.269Z",
   "files": {
     "bn.json": {
       "source": "data/bn.json",
-      "size": 435,
-      "count": 2
+      "count": 2,
+      "size_kb": "0.42"
     },
     "en.json": {
       "source": "data/en.json",
-      "size": 32188,
-      "count": 269
+      "count": 269,
+      "size_kb": "31.43"
     },
     "hi.json": {
       "source": "data/hi.json",
-      "size": 2307,
-      "count": 11
+      "count": 11,
+      "size_kb": "2.25"
     },
     "ur.json": {
       "source": "data/ur.json",
-      "size": 1406,
-      "count": 10
+      "count": 10,
+      "size_kb": "1.37"
     }
   }
 }
