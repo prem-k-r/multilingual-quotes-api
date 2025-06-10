@@ -65,8 +65,6 @@ jobs:
                                   const minified = minify(content);
                                   // Save the minified version
                                   fs.writeFileSync('$output_file', minified);
-                                  // Mark this file as processed
-                                  fs.appendFileSync('processed_files.txt', '$filename\n');
                                   console.log('✓ Successfully minified $input_file');
                               } catch (error) {
                                   console.error('✗ Error minifying $input_file:', error.message);
@@ -86,108 +84,67 @@ jobs:
 
                   # Use Node.js to create comprehensive metadata with quote counting
                   node -e "
-                    const fs = require('fs');
-                    
-                    // Load existing metadata to preserve unchanged file timestamps
-                    let metadata = {
-                        lastUpdated: '',  // Global timestamp of most recent file change
-                        files: {}         // Individual file metadata
-                    };
-                    
-                    try {
-                        // Try to load existing metadata
-                        if (fs.existsSync('metadata.json')) {
-                            metadata = JSON.parse(fs.readFileSync('metadata.json', 'utf8'));
-                        }
-                    } catch (error) {
-                        console.log('Creating new metadata file (no existing metadata found)');
-                    }
-                    
-                    // Get list of actually processed files from the minification step
-                    let processedFiles = [];
-                    try {
-                        if (fs.existsSync('processed_files.txt')) {
-                            processedFiles = fs.readFileSync('processed_files.txt', 'utf8')
-                                .trim().split('\n').filter(f => f.length > 0);
-                            console.log('Files processed in this run:', processedFiles);
-                        }
-                    } catch (error) {
-                        console.log('No processed files list found - no files were minified');
-                    }
-                    
-                    // Track modification times for global lastUpdated calculation
-                    const allModificationTimes = [];
-                    
-                    // First, preserve timestamps for all existing files (unchanged files)
-                    Object.keys(metadata.files || {}).forEach(filename => {
-                        if (metadata.files[filename].lastUpdated) {
-                            allModificationTimes.push(new Date(metadata.files[filename].lastUpdated));
-                        }
-                    });
-                    
-                    // Update metadata only for files that were actually processed
-                    processedFiles.forEach((filename) => {
-                        const inputFile = 'data/' + filename;
-                        const outputFile = 'minified/' + filename;
-                        
-                        try {
-                            // Read and parse the original file to analyze it
-                            const originalContent = fs.readFileSync(inputFile, 'utf8');
-                            const originalData = JSON.parse(originalContent);
-                            
-                            // Count the number of quotes (assumes JSON object with quote keys)
-                            const quoteCount = typeof originalData === 'object' && originalData !== null 
-                                ? Object.keys(originalData).length 
-                                : 0;
-                            
-                            // Get the size of the minified file in kilobytes
-                            let fileSize = 0;
-                            try {
-                                const stats = fs.statSync(outputFile);
-                                fileSize = (stats.size / 1024).toFixed(2);
-                            } catch (error) {
-                                console.warn('Warning: Could not get size for ' + outputFile);
-                            }
-                            
-                            // Get the actual modification time of the source file
-                            const sourceStats = fs.statSync(inputFile);
-                            const timestamp = sourceStats.mtime.toISOString();
-                            
-                            // Track this timestamp for global lastUpdated calculation
-                            allModificationTimes.push(new Date(timestamp));
-                            
-                            // Update metadata for this specific file
-                            metadata.files[filename] = {
-                                lastUpdated: timestamp,    // When this source file was last modified
-                                source: inputFile,         // Original file path
-                                quoteCount: quoteCount,    // Number of quotes in the file
-                                size_kb: fileSize          // Minified file size in kilobytes
-                            };
-                            
-                            console.log('✓ Updated metadata for ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' KB');
+                      const fs = require('fs');
+                      
+                      // Initialize metadata object
+                      const metadata = {
+                          lastUpdated: '',  // Will be set to the most recent file modification time
+                          files: {}  // Will contain info about each processed file
+                      };
+                      
+                      // Get all JSON files in data directory, sorted alphabetically
+                      const files = fs.readdirSync('data').filter(file => file.endsWith('.json')).sort();
+                      
+                      // Track all modification times to find the most recent
+                      const allModificationTimes = [];
+                      
+                      // Process each file to gather metadata
+                      files.forEach((filename) => {
+                          const inputFile = 'data/' + filename;
+                          const outputFile = 'minified/' + filename;
+                          
+                          try {
+                              // Read and parse the original file to analyze it
+                              const originalContent = fs.readFileSync(inputFile, 'utf8');
+                              const originalData = JSON.parse(originalContent);
+                              
+                              // Count the number of quotes (assumes JSON object with quote keys)
+                              const quoteCount = typeof originalData === 'object' && originalData !== null 
+                                  ? Object.keys(originalData).length 
+                                  : 0;
+                              
+                              // Get the size of the minified file in bytes
+                              let fileSize = 0;
+                              try {
+                                  const stats = fs.statSync(outputFile);
+                                  fileSize =  (stats.size / 1024).toFixed(2);
+                              } catch (error) {
+                                  console.warn('Warning: Could not get size for ' + outputFile);
+                              }
+                              
+                              // Store all metadata for this file
+                              metadata.files[filename] = {
+                                  source: inputFile,         // Original file path
+                                  quoteCount: quoteCount,    // Number of quotes in the file
+                                  size_kb: fileSize          // Minified file size in kilobytes
+                              };
+                              
+                              console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' kilobytes');
 
-                        } catch (error) {
-                            console.error('✗ Error processing ' + filename + ':', error.message);
-                            process.exit(1);
-                        }
-                    });
-                    
-                    // Set global lastUpdated to the most recent file modification time
-                    if (allModificationTimes.length > 0) {
-                        const mostRecentTime = new Date(Math.max(...allModificationTimes));
-                        metadata.lastUpdated = mostRecentTime.toISOString();
-                        console.log('✓ Global lastUpdated set to: ' + metadata.lastUpdated);
-                    }
+                          } catch (error) {
+                              console.error('✗ Error processing ' + filename + ':', error.message);
+                              process.exit(1);
+                          }
+                      });
+                      
+                      // Set lastUpdated to current processing time
+                      metadata.lastUpdated = new Date().toISOString();
 
-                    // Write the metadata file with pretty formatting
-                    fs.writeFileSync('metadata.json', JSON.stringify(metadata, null, 2));
-                    console.log('✓ Updated metadata file with ' + processedFiles.length + ' processed files');
-                    
-                    // Clean up the processed files list
-                    if (fs.existsSync('processed_files.txt')) {
-                        fs.unlinkSync('processed_files.txt');
-                    }
-                    "
+                      // Write the metadata file with pretty formatting
+                      fs.writeFileSync('$metadata_file', JSON.stringify(metadata, null, 2));
+                      console.log('✓ Updated metadata file with ' + files.length + ' files');
+                      console.log('✓ Most recent file modification: ' + metadata.lastUpdated);
+                  "
 
             # Step 7: Check if any files were actually changed
             - name: Check for changes
