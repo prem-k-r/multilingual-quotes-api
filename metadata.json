@@ -1,26 +1,22 @@
 {
-  "lastUpdated": "2025-06-10T12:39:58.720Z",
+  "lastUpdated": "2025-06-10T13:12:21.296Z",
   "files": {
     "bn.json": {
-      "lastUpdated": "2025-06-10T12:39:58.720Z",
       "source": "data/bn.json",
       "quoteCount": 2,
       "size_kb": "0.42"
     },
     "en.json": {
-      "lastUpdated": "2025-06-10T12:39:58.720Z",
       "source": "data/en.json",
-      "quoteCount": 272,
+      "quoteCount": 273,
       "size_kb": "31.43"
     },
     "hi.json": {
-      "lastUpdated": "2025-06-10T12:39:58.720Z",
       "source": "data/hi.json",
       "quoteCount": 11,
       "size_kb": "2.25"
     },
     "ur.json": {
-      "lastUpdated": "2025-06-10T12:39:58.720Z",
       "source": "data/ur.json",
       "quoteCount": 10,
       "size_kb": "1.37"
