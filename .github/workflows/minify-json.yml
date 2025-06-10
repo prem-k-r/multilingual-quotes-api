@@ -84,78 +84,81 @@ jobs:
 
                   # Use Node.js to create comprehensive metadata with quote counting
                   node -e "
-                      const fs = require('fs');
-                      
-                      // Initialize metadata object
-                      const metadata = {
-                          lastUpdated: '',  // Will be set to the most recent file modification time
-                          files: {}  // Will contain info about each processed file
-                      };
-                      
-                      // Get all JSON files in data directory, sorted alphabetically
-                      const files = fs.readdirSync('data').filter(file => file.endsWith('.json')).sort();
-                      
-                      // Track all modification times to find the most recent
-                      const allModificationTimes = [];
-                      
-                      // Process each file to gather metadata
-                      files.forEach((filename) => {
-                          const inputFile = 'data/' + filename;
-                          const outputFile = 'minified/' + filename;
-                          
-                          try {
-                              // Read and parse the original file to analyze it
-                              const originalContent = fs.readFileSync(inputFile, 'utf8');
-                              const originalData = JSON.parse(originalContent);
-                              
-                              // Count the number of quotes (assumes JSON object with quote keys)
-                              const quoteCount = typeof originalData === 'object' && originalData !== null 
-                                  ? Object.keys(originalData).length 
-                                  : 0;
-                              
-                              // Get the size of the minified file in bytes
-                              let fileSize = 0;
-                              try {
-                                  const stats = fs.statSync(outputFile);
-                                  fileSize =  (stats.size / 1024).toFixed(2);
-                              } catch (error) {
-                                  console.warn('Warning: Could not get size for ' + outputFile);
-                              }
-                              
-                              // Get the actual modification time of the source file (not processing time)
-                              const sourceStats = fs.statSync(inputFile);
-                              const timestamp = sourceStats.mtime.toISOString();
-                              
-                              // Track this modification time for lastUpdated calculation
-                              allModificationTimes.push(new Date(timestamp));
-                              
-                              // Store all metadata for this file
-                              metadata.files[filename] = {
-                                  lastUpdated: timestamp,    // When this source file was last modified
-                                  source: inputFile,         // Original file path
-                                  quoteCount: quoteCount,    // Number of quotes in the file
-                                  size_kb: fileSize          // Minified file size in kilobytes
-                              };
-                              
-                              console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' kilobytes');
-
-                          } catch (error) {
-                              console.error('✗ Error processing ' + filename + ':', error.message);
-                              process.exit(1);
-                          }
-                      });
-                      
-                      // Set lastUpdated to the most recent file modification time
-                      if (allModificationTimes.length > 0) {
-                          const mostRecentTime = new Date(Math.max(...allModificationTimes));
-                          metadata.lastUpdated = mostRecentTime.toISOString();
-                      }
-
-                      // Write the metadata file with pretty formatting
-                      fs.writeFileSync('$metadata_file', JSON.stringify(metadata, null, 2));
-                      console.log('✓ Updated metadata file with ' + files.length + ' files');
-                      console.log('✓ Most recent file modification: ' + metadata.lastUpdated);
-                  "
+                    const fs = require('fs');
+                    
+                    // Read existing metadata if it exists
+                    let metadata = {
+                        lastUpdated: '',
+                        files: {}
+                    };
+                    
+                    try {
+                        if (fs.existsSync('metadata.json')) {
+                            metadata = JSON.parse(fs.readFileSync('metadata.json', 'utf8'));
+                        }
+                    } catch (error) {
+                        console.log('Creating new metadata file');
+                    }
+                    
+                    // Get all JSON files in data directory
+                    const allFiles = fs.readdirSync('data').filter(file => file.endsWith('.json')).sort();
+                    const modificationTimes = [];
+                    
+                    // Process each file to check if it was recently minified
+                    allFiles.forEach((filename) => {
+                        const inputFile = 'data/' + filename;
+                        const outputFile = 'minified/' + filename;
+                        
+                        // Only update metadata if the minified file was just created/updated
+                        if (fs.existsSync(outputFile)) {
+                            const sourceStats = fs.statSync(inputFile);
+                            const outputStats = fs.statSync(outputFile);
+                            
+                            // If output is newer than existing metadata entry, it was just processed
+                            const existingTimestamp = metadata.files[filename]?.lastUpdated;
+                            const currentTimestamp = sourceStats.mtime.toISOString();
+                            
+                            if (!existingTimestamp || currentTimestamp !== existingTimestamp || 
+                                Math.abs(outputStats.mtime - new Date()) < 60000) { // Within last minute
+                                
+                                try {
+                                    const originalContent = fs.readFileSync(inputFile, 'utf8');
+                                    const originalData = JSON.parse(originalContent);
+                                    const quoteCount = typeof originalData === 'object' && originalData !== null 
+                                        ? Object.keys(originalData).length : 0;
+                                    
+                                    const fileSize = (outputStats.size / 1024).toFixed(2);
+                                    
+                                    metadata.files[filename] = {
+                                        lastUpdated: currentTimestamp,  // When this source file was last modified
+                                        source: inputFile,              // Original file path
+                                        quoteCount: quoteCount,         // Number of quotes in the file
+                                        size_kb: fileSize               // Minified file size in kilobytes
+                                    };
+                                    
+                                    modificationTimes.push(new Date(currentTimestamp));
+                                    console.log('✓ Updated metadata for ' + filename);
+                                } catch (error) {
+                                    console.error('✗ Error processing ' + filename + ':', error.message);
+                                }
+                            } else {
+                                // Keep existing timestamp for unchanged files
+                                if (metadata.files[filename]) {
+                                    modificationTimes.push(new Date(metadata.files[filename].lastUpdated));
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Update main lastUpdated only if there were changes
+                    if (modificationTimes.length > 0) {
+                        const mostRecentTime = new Date(Math.max(...modificationTimes));
+                        metadata.lastUpdated = mostRecentTime.toISOString();
+                    }
+                    
+                    fs.writeFileSync('metadata.json', JSON.stringify(metadata, null, 2));
+                    console.log('✓ Metadata updated');
+                    "
 
             # Step 7: Check if any files were actually changed
             - name: Check for changes
