@@ -80,7 +80,7 @@ jobs:
             - name: Update metadata file
               run: |
                   # Path for the metadata file
-                  metadata_file="minified/metadata.json"
+                  metadata_file="metadata.json"
 
                   # Use Node.js to create comprehensive metadata with quote counting
                   node -e "
