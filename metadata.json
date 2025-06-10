@@ -1,0 +1,29 @@
+{
+  "lastUpdated": "2025-06-10T08:26:20.907Z",
+  "files": {
+    "bn.json": {
+      "lastUpdated": "2025-06-10T08:26:20.906Z",
+      "source": "data/bn.json",
+      "quoteCount": 2,
+      "size_kb": "0.42"
+    },
+    "en.json": {
+      "lastUpdated": "2025-06-10T08:26:20.906Z",
+      "source": "data/en.json",
+      "quoteCount": 269,
+      "size_kb": "31.43"
+    },
+    "hi.json": {
+      "lastUpdated": "2025-06-10T08:26:20.907Z",
+      "source": "data/hi.json",
+      "quoteCount": 11,
+      "size_kb": "2.25"
+    },
+    "ur.json": {
+      "lastUpdated": "2025-06-10T08:26:20.907Z",
+      "source": "data/ur.json",
+      "quoteCount": 10,
+      "size_kb": "1.37"
+    }
+  }
+}
