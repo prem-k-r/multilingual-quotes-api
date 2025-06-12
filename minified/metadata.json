@@ -1,0 +1,25 @@
+{
+  "lastUpdated": "2025-06-12T10:58:31.188Z",
+  "files": {
+    "bn.json": {
+      "language": "bn",
+      "count": 2,
+      "size_kb": "0.42"
+    },
+    "en.json": {
+      "language": "en",
+      "count": 273,
+      "size_kb": "31.86"
+    },
+    "hi.json": {
+      "language": "hi",
+      "count": 14,
+      "size_kb": "2.91"
+    },
+    "ur.json": {
+      "language": "ur",
+      "count": 10,
+      "size_kb": "1.37"
+    }
+  }
+}
