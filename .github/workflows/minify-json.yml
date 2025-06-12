@@ -38,49 +38,43 @@ jobs:
             - name: Install dependencies
               run: npm init -y && npm install jsonminify
 
-            # Step 5: Process and minify only changed JSON files
+            # Step 5: Process and minify all JSON files
             - name: Minify JSON files
               run: |
-                  # Find all JSON files in data/ directory and process only changed ones
+                  # Find all JSON files in data/ directory and process them one by one
                   find data -name "*.json" -type f | while read -r input_file; do
                       # Extract just the filename (e.g., "en.json" from "data/en.json")
                       filename=$(basename "$input_file")
                       # Set the output path in minified/ folder
                       output_file="minified/$filename"
                       
-                      # Check if source is newer than minified file (or minified doesn't exist)
-                      # This optimization prevents reprocessing unchanged files
-                      if [ "$input_file" -nt "$output_file" ] || [ ! -f "$output_file" ]; then
-                          echo "Minifying $input_file -> $output_file (file changed)"
+                      echo "Minifying $input_file -> $output_file"
+                      
+                      # Use Node.js to minify the JSON file
+                      node -e "
+                          const fs = require('fs');
+                          const minify = require('jsonminify');
                           
-                          # Use Node.js to minify only the changed file
-                          node -e "
-                              const fs = require('fs');
-                              const minify = require('jsonminify');
-                              
-                              try {
-                                  // Read the original JSON file
-                                  const content = fs.readFileSync('$input_file', 'utf8');
-                                  // Minify it (remove whitespace, comments, etc.)
-                                  const minified = minify(content);
-                                  // Save the minified version
-                                  fs.writeFileSync('$output_file', minified);
-                                  console.log('✓ Successfully minified $input_file');
-                              } catch (error) {
-                                  console.error('✗ Error minifying $input_file:', error.message);
-                                  process.exit(1);
-                              }
-                          "
-                      else
-                          echo "Skipping $input_file (no changes detected)"
-                      fi
+                          try {
+                              // Read the original JSON file
+                              const content = fs.readFileSync('$input_file', 'utf8');
+                              // Minify it (remove whitespace, comments, etc.)
+                              const minified = minify(content);
+                              // Save the minified version
+                              fs.writeFileSync('$output_file', minified);
+                              console.log('✓ Successfully minified $input_file');
+                          } catch (error) {
+                              console.error('✗ Error minifying $input_file:', error.message);
+                              process.exit(1);
+                          }
+                      "
                   done
 
             # Step 6: Create metadata file with information about processed files
             - name: Update metadata file
               run: |
                   # Path for the metadata file
-                  metadata_file="metadata.json"
+                  metadata_file="minified/metadata.json"
 
                   # Use Node.js to create comprehensive metadata with quote counting
                   node -e "
@@ -88,15 +82,12 @@ jobs:
                       
                       // Initialize metadata object
                       const metadata = {
-                          lastUpdated: '',  // Will be set to the most recent file modification time
+                          lastUpdated: new Date().toISOString(),  // When this process ran
                           files: {}  // Will contain info about each processed file
                       };
                       
                       // Get all JSON files in data directory, sorted alphabetically
                       const files = fs.readdirSync('data').filter(file => file.endsWith('.json')).sort();
-                      
-                      // Track all modification times to find the most recent
-                      const allModificationTimes = [];
                       
                       // Process each file to gather metadata
                       files.forEach((filename) => {
@@ -121,37 +112,33 @@ jobs:
                               } catch (error) {
                                   console.warn('Warning: Could not get size for ' + outputFile);
                               }
-                              
+                           
                               // Store all metadata for this file
                               metadata.files[filename] = {
-                                  source: inputFile,         // Original file path
-                                  quoteCount: quoteCount,    // Number of quotes in the file
-                                  size_kb: fileSize          // Minified file size in kilobytes
+                                  filename.replace('.json', ''), // Extract language code from filename
+                                  count: quoteCount,       // Number of quotes in the file
+                                  size_kb: fileSize        // Minified file size in kilobytes
                               };
                               
-                              console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' kilobytes');
+                              console.log('✓ Processed ' + filename + ': ' + quoteCount + ' quotes, ' + fileSize + ' bytes');
 
                           } catch (error) {
                               console.error('✗ Error processing ' + filename + ':', error.message);
                               process.exit(1);
                           }
                       });
-                      
-                      // Set lastUpdated to current processing time
-                      metadata.lastUpdated = new Date().toISOString();
 
                       // Write the metadata file with pretty formatting
                       fs.writeFileSync('$metadata_file', JSON.stringify(metadata, null, 2));
                       console.log('✓ Updated metadata file with ' + files.length + ' files');
-                      console.log('✓ Most recent file modification: ' + metadata.lastUpdated);
                   "
 
             # Step 7: Check if any files were actually changed
             - name: Check for changes
               id: check_changes
               run: |
-                  # Check if there are any uncommitted changes in the minified/ folder or metadata file
-                  if [ -n "$(git status --porcelain minified/ metadata.json)" ]; then
+                  # Check if there are any uncommitted changes in the minified/ folder
+                  if [ -n "$(git status --porcelain minified/)" ]; then
                     echo "changes=true" >> $GITHUB_OUTPUT
                     echo "Changes detected in minified files or metadata"
                   else
@@ -166,8 +153,8 @@ jobs:
                   # Configure git with GitHub Actions bot identity
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action"
-                  # Add all changes in minified/ folder and metadata file to git
-                  git add minified/ metadata.json
+                  # Add all changes in minified/ folder to git
+                  git add minified/
                   # Commit with descriptive message (skip ci prevents infinite loops)
                   git commit -m "Auto-minify JSON files and update metadata"
                   # Push changes back to the repository
