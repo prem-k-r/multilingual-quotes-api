@@ -15,15 +15,15 @@ These `.json` files are publicly hosted. You can directly fetch them using any H
 **Example URLs:**
 
 ```
-https://xengshi.github.io/multilingual-quotes-api/data/en.json
-https://xengshi.github.io/multilingual-quotes-api/data/hi.json
-https://xengshi.github.io/multilingual-quotes-api/data/ur.json
+https://prem-k-r.github.io/multilingual-quotes-api/data/en.json
+https://prem-k-r.github.io/multilingual-quotes-api/data/hi.json
+https://prem-k-r.github.io/multilingual-quotes-api/data/ur.json
 ```
 
 **Example (JavaScript):**
 
 ```js
-fetch("https://xengshi.github.io/multilingual-quotes-api/data/en.json")
+fetch("https://prem-k-r.github.io/multilingual-quotes-api/data/en.json")
   .then(res => res.json())
   .then(data => console.log(data));
 ```
