@@ -16,7 +16,7 @@ on:
 jobs:
     minify-json:
         # Only run this job for the main repository
-        if: github.repository == 'XengShi/multilingual-quotes-api'
+        if: github.repository == 'prem-k-r/multilingual-quotes-api'
 
         # Use latest Ubuntu runner
         runs-on: ubuntu-latest
