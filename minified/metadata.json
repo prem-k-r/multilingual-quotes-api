@@ -1,10 +1,10 @@
 {
-  "lastUpdated": "2026-01-27T16:00:14.292Z",
+  "lastUpdated": "2026-02-27T16:35:06.673Z",
   "files": {
     "bn.json": {
       "language": "bn",
-      "count": 128,
-      "size_kb": "32.03"
+      "count": 148,
+      "size_kb": "35.84"
     },
     "cs.json": {
       "language": "cs",
@@ -13,8 +13,8 @@
     },
     "en.json": {
       "language": "en",
-      "count": 291,
-      "size_kb": "34.21"
+      "count": 307,
+      "size_kb": "35.83"
     },
     "hi.json": {
       "language": "hi",
