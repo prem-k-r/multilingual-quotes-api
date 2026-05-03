@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-27T16:35:06.673Z",
+  "lastUpdated": "2026-05-03T10:00:14.816Z",
   "files": {
     "bn.json": {
       "language": "bn",
@@ -13,8 +13,8 @@
     },
     "en.json": {
       "language": "en",
-      "count": 307,
-      "size_kb": "35.83"
+      "count": 368,
+      "size_kb": "42.48"
     },
     "hi.json": {
       "language": "hi",
